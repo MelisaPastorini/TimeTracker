@@ -38,6 +38,8 @@ public class PruebaGenerarReporte {
     public void setUp() {
 
         //Valores para utilizar en tests
+        usuario = PropertyReader.getValuesProperty("user");
+        password = PropertyReader.getValuesProperty("password");
         sitioReporte = PropertyReader.getValuesProperty("sitioReporte");
 
         //Valores para utilizar en los asserts
