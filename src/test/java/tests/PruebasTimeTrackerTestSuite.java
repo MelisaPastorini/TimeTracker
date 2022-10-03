@@ -11,6 +11,7 @@ import org.junit.platform.suite.api.Suite;
         PruebaVerificarProyecto.class,
         PruebaVerificarUsuario.class
 } )
+
 public class PruebasTimeTrackerTestSuite {
 
 }

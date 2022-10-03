@@ -1,52 +1,48 @@
 package tests;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import pages.LoginPage;
 import pages.TiempoPage;
 import utils.PropertyReader;
-import utils.Utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-
-public class PruebaAgregarTiempo {
-    //WebDriver para configurar y manipular pagina
-    protected static WebDriver driver;
+public class PruebaAgregarTiempo extends BaseTest{
 
     //Valores para utilizar en tests
-    protected static String usuario, password, proyecto, inicio, fin, nota;
+    protected String nombreUsuarioRol, proyectos, proyecto, inicio, fin, nota;
 
     //Page Objects
     protected LoginPage loginPage;
     protected TiempoPage tiempoPage;
 
-    @BeforeAll
-    public void setUp() {
+    @BeforeEach
+    public void configuracionAntesDelTestAgregarTiempo() {
 
-        //Valores para utilizar en tests
-        usuario = PropertyReader.getValuesProperty("user");
-        password = PropertyReader.getValuesProperty("password");
+        //Valores para utilizar en asserts
+        nombreUsuarioRol = PropertyReader.getValuesProperty("nombreUsuarioRol");
+        proyectos = PropertyReader.getValuesProperty("proyectos");
         proyecto = PropertyReader.getValuesProperty("proyecto");
         inicio = PropertyReader.getValuesProperty("inicio");
         fin = PropertyReader.getValuesProperty("fin");
         nota = PropertyReader.getValuesProperty("nota");
 
+
         //Configurar el WebDriver
-        driver = Utils.configurarDriver();
         loginPage = new LoginPage(driver);
-        loginPage.signInWith(usuario, password);
+        loginPage.signInWith();
     }
 
     @Test
-    void AgregarTiempo() throws InterruptedException {
+    void agregarTiempo() {
 
         tiempoPage = new TiempoPage(driver);
-        tiempoPage.AgregarHora();
+        tiempoPage.agregarHora();
+
+        //Verificar que el usuario es el adecuado
+        assertEquals(nombreUsuarioRol, driver.findElement(By.cssSelector(".user-details")).getText());
 
         //Verificar tarea cargada
         //Verificar que está el texto con el nombre del proyecto
@@ -60,6 +56,7 @@ public class PruebaAgregarTiempo {
 
         //Verificar que está el texto con la nota
         assertEquals(nota, driver.findElement(By.cssSelector(".text-cell:nth-child(5)")).getText());
+
 
     }
 }

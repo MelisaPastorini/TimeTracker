@@ -1,73 +1,58 @@
 package tests;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.NoSuchElementException;
 import pages.EliminarTiempoPage;
 import pages.LoginPage;
 import pages.TiempoPage;
 import utils.PropertyReader;
-import utils.Utils;
 
-import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-
-public class PruebaEliminarHora {
-    //WebDriver para configurar y manipular pagina
-    protected static WebDriver driver;
-
-    //Valores para utilizar en tests
-    protected static String usuario, password, proyecto, inicio, fin, nota;
+public class PruebaEliminarHora extends BaseTest{
 
     //Valores para utilizar en los asserts
-    protected static String tituloPaginaEliminar, mensajeError, nombreUsuarioRol;
-    protected static String tituloPaginaTiempo;
+    protected String proyecto, inicio, fin, nota;
+    protected String tituloPaginaEliminar, mensajeError, nombreUsuarioRol;
+    protected String tituloPaginaTiempo;
 
     //Page Objects
     protected LoginPage loginPage;
     protected TiempoPage tiempoPage;
     protected EliminarTiempoPage eliminarTiempoPage;
 
-    @BeforeAll
-    public void setUp() {
+    @BeforeEach
+    public void configuracionAntesDelTestEliminarHora() {
 
-        //Valores para utilizar en tests
-        usuario = PropertyReader.getValuesProperty("user");
-        password = PropertyReader.getValuesProperty("password");
+        //Valores para utilizar en los asserts
         proyecto = PropertyReader.getValuesProperty("proyecto");
         inicio = PropertyReader.getValuesProperty("inicio");
         fin = PropertyReader.getValuesProperty("fin");
         nota = PropertyReader.getValuesProperty("nota");
-
-        //Valores para utilizar en los asserts
         tituloPaginaEliminar = PropertyReader.getValuesProperty("tituloPaginaEliminar");
         tituloPaginaTiempo = PropertyReader.getValuesProperty("tituloPaginaTiempo");
         mensajeError = PropertyReader.getValuesProperty("mensajeError");
         nombreUsuarioRol = PropertyReader.getValuesProperty("nombreUsuarioRol");
 
         //Configurar el WebDriver
-        driver = Utils.configurarDriver();
         loginPage = new LoginPage(driver);
-        loginPage.signInWith(usuario, password);
+        loginPage.signInWith();
     }
 
     @Test
-    void EliminarHora() throws InterruptedException {
+    void eliminarUnicaHoraCargada() {
 
         //Agregar Hora
         tiempoPage = new TiempoPage(driver);
-        tiempoPage.AgregarHora();
+        tiempoPage.agregarHora();
 
         //Presionar el ícono de eliminar hora para pasar a la pantalla de eliminar hora
         eliminarTiempoPage = new EliminarTiempoPage(driver);
-        eliminarTiempoPage.EliminarHora();
-
-        //Esperar para que se cargue la nueva pagina
-        sleep(2000);
+        eliminarTiempoPage.eliminarHora();
 
         //Verificar que el título de la página es: Time Tracker - Eliminando el historial de tiempo |
         assertEquals(tituloPaginaEliminar, driver.getTitle(), mensajeError);
@@ -88,14 +73,18 @@ public class PruebaEliminarHora {
         //Verificar que está el texto con la nota
         assertEquals(nota, driver.findElement(By.cssSelector(".text-cell:nth-child(5)")).getText());
 
-
         //Presionar el botón Eliminar para eliminar definitivamente la hora
-        eliminarTiempoPage.EliminarDefinitivoHora();
+        eliminarTiempoPage.eliminarDefinitivoHora();
 
-        //Esperar para que se cargue la nueva pagina
-        sleep(2000);
-
-        // Verificar titulo de la pagina "Time Tracker - Tiempo"
+        //Verificar titulo de la pagina "Time Tracker - Tiempo"
         assertEquals(tituloPaginaTiempo, driver.getTitle());
+
+        //Verificar que la grilla no está presente y que el mensaje de excepcion es:
+        //"no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".record-list\"}",
+        NoSuchElementException noSuchElementException = Assertions.assertThrows(NoSuchElementException.class, () -> {
+            driver.findElement(By.cssSelector(".record-list"));
+        });
+
+        assertTrue(noSuchElementException.getMessage().contains("no such element"));
     }
 }

@@ -1,40 +1,30 @@
 package tests;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import pages.LoginPage;
 import pages.ProyectosPage;
 import utils.PropertyReader;
-import utils.Utils;
 
-import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-
-public class PruebaVerificarProyecto {
-    //WebDriver para configurar y manipular pagina
-    protected static WebDriver driver;
+public class PruebaVerificarProyecto extends BaseTest{
 
     //Valores para utilizar en tests
-    protected static String usuario, password, proyecto, inicio, fin, nota;
+    protected String proyecto, inicio, fin, nota;
 
     //Valores para utilizar en los asserts
-    protected static String tituloPaginaProyectos, mensajeError, nombreUsuarioRol;
+    protected String tituloPaginaProyectos, mensajeError, nombreUsuarioRol;
 
     //Page Objects
     protected LoginPage loginPage;
     protected ProyectosPage proyectosPage;
 
-    @BeforeAll
-    public void setUp() {
+    @BeforeEach
+    public void configuracionAntedDelTestVerificarProyecto() {
 
         //Valores para utilizar en tests
-        usuario = PropertyReader.getValuesProperty("user");
-        password = PropertyReader.getValuesProperty("password");
         proyecto = PropertyReader.getValuesProperty("proyecto");
 
         //Valores para utilizar en los asserts
@@ -43,19 +33,16 @@ public class PruebaVerificarProyecto {
         nombreUsuarioRol = PropertyReader.getValuesProperty("nombreUsuarioRol");
 
         //Configurar el WebDriver
-        driver = Utils.configurarDriver();
         loginPage = new LoginPage(driver);
-        loginPage.signInWith(usuario, password);
+        loginPage.signInWith();
     }
 
     @Test
-    void VerificarProyecto() throws InterruptedException {
+    void verificarProyecto() {
 
         //Entrar en el menú Proyectos
         proyectosPage = new ProyectosPage(driver);
-        proyectosPage.IrAMenuProyectos();
-
-        sleep(2000);
+        proyectosPage.irAMenuProyectos();
 
         //Verificar título de la página Time Tracker - Proyectos
         assertEquals(tituloPaginaProyectos, driver.getTitle(), mensajeError);

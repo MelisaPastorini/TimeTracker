@@ -15,24 +15,24 @@ public class EliminarTiempoPage extends BasePage {
         super(webDriver);
     }
 
-    public void EliminarHora() throws InterruptedException {
+    public void eliminarHora() {
 
-        sleep(2000);
+//        sleep(2000);
 
         //Presionar el ícono de eliminar hora
         click(btnEliminarBy);
 
-        sleep(2000);
+//        sleep(2000);
     }
 
-    public void EliminarDefinitivoHora() throws InterruptedException {
+    public void eliminarDefinitivoHora() {
 
-        sleep(2000);
+//        sleep(2000);
 
         //Presionar el botón Eliminar
         click(btnDeleteBy);
 
-        sleep(2000);
+//        sleep(2000);
     }
 }
 

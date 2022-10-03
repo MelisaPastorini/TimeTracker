@@ -11,7 +11,7 @@ public class PersonasPage extends BasePage{
         super(webDriver);
     }
 
-    public void IrAMenuPersonas() {
+    public void irAMenuPersonas() {
 
         get(PropertyReader.getEnvironmentProperty("sitioPersonas"));
     }

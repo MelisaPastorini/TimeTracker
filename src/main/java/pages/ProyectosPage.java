@@ -12,7 +12,7 @@ public class ProyectosPage extends BasePage{
         super(webDriver);
     }
 
-    public void IrAMenuProyectos() {
+    public void irAMenuProyectos() {
 
         get(PropertyReader.getEnvironmentProperty("sitioProyectos"));
     }

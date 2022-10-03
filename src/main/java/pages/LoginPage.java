@@ -14,7 +14,7 @@ public class LoginPage extends BasePage {
         super(driver);
     }
 
-    public void signInWith(String user, String password) {
+    public void signInWith() {
 
         get(PropertyReader.getEnvironmentProperty("sitioWeb"));
         sendKeys(userBy, PropertyReader.getValuesProperty("user"));

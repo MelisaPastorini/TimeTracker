@@ -11,6 +11,7 @@ public class TiempoPage extends BasePage {
 
     private final By diaBy = By.linkText("Hoy");
     private final By proyectoBy = By.id("project");
+    private final By opcionBy = By.xpath("//option[. = 'TATF-202208']");
     private final By inicioBy = By.id("start");
     private final By finBy = By.id("finish");
     private final By notaBy = By.id("note");
@@ -20,7 +21,7 @@ public class TiempoPage extends BasePage {
         super(webDriver);
     }
 
-    public void AgregarHora() throws InterruptedException {
+    public void agregarHora() {
 
         get(PropertyReader.getEnvironmentProperty("sitioHora"));
 
@@ -29,10 +30,10 @@ public class TiempoPage extends BasePage {
 
         //Seleccionar el proyecto TATF-202208
         click(proyectoBy);
-        sleep(2000);
+//        sleep(2000);
         WebElement dropdown = findElement(proyectoBy);
-        sleep(2000);
-        dropdown.findElement(By.xpath("//option[. = 'TATF-202208']")).click();
+//        sleep(2000);
+        dropdown.findElement(opcionBy).click();
 
         //Agregar hora de inicio
         click(inicioBy);

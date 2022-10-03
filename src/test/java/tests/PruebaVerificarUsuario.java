@@ -1,41 +1,31 @@
 package tests;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import pages.LoginPage;
 import pages.PersonasPage;
-import pages.ProyectosPage;
 import utils.PropertyReader;
-import utils.Utils;
 
-import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-
-public class PruebaVerificarUsuario {
-    //WebDriver para configurar y manipular pagina
-    protected static WebDriver driver;
+public class PruebaVerificarUsuario extends BaseTest{
 
     //Valores para utilizar en tests
-    protected static String usuario, password, proyecto;
+    protected String usuario, proyecto;
 
     //Valores para utilizar en los asserts
-    protected static String tituloPaginaPersonas, mensajeError, nombreUsuarioRol;
+    protected String tituloPaginaPersonas, mensajeError, nombreUsuarioRol;
 
     //Page Objects
     protected LoginPage loginPage;
     protected PersonasPage personasPage;
 
-    @BeforeAll
-    public void setUp() {
+    @BeforeEach
+    public void configuracionAntesDelTestVerificarUsuario() {
 
         //Valores para utilizar en tests
         usuario = PropertyReader.getValuesProperty("user");
-        password = PropertyReader.getValuesProperty("password");
         proyecto = PropertyReader.getValuesProperty("proyecto");
 
         //Valores para utilizar en los asserts
@@ -44,19 +34,16 @@ public class PruebaVerificarUsuario {
         nombreUsuarioRol = PropertyReader.getValuesProperty("nombreUsuarioRol");
 
         //Configurar el WebDriver
-        driver = Utils.configurarDriver();
         loginPage = new LoginPage(driver);
-        loginPage.signInWith(usuario, password);
+        loginPage.signInWith();
     }
 
     @Test
-    void VerificarUsuario() throws InterruptedException {
+    void verificarUsuario() {
 
         //Entrar en el menú Personas
         personasPage = new PersonasPage(driver);
-        personasPage.IrAMenuPersonas();
-
-        sleep(2000);
+        personasPage.irAMenuPersonas();
 
         //Verificar título de la página Time Tracker - Personas
         assertEquals(tituloPaginaPersonas, driver.getTitle(), mensajeError);
@@ -70,5 +57,4 @@ public class PruebaVerificarUsuario {
         //Verificar que está el login del usuario
         assertEquals(usuario, driver.findElement(By.cssSelector("tr:nth-child(26) > .text-cell:nth-child(2)")).getText());
     }
-
 }

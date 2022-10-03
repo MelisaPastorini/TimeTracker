@@ -1,65 +1,47 @@
 package tests;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import pages.LoginPage;
 import pages.ReportesPage;
 import utils.PropertyReader;
-import utils.Utils;
 
 import java.util.List;
 
-import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-
-public class PruebaGenerarReporte {
-
-    //WebDriver para configurar y manipular pagina
-    protected static WebDriver driver;
-
-    //Valores para utilizar en tests
-    protected static String usuario, password;
+public class PruebaGenerarReporte extends BaseTest{
 
     //Valores para utilizar en los asserts
-    protected static String tituloPaginaReportes, mensajeError, sitioReporte;
+    protected String tituloPaginaReportes, mensajeError, sitioReporte, nombreUsuarioRol;
 
     //Page Objects
     protected LoginPage loginPage;
     protected ReportesPage reportesPage;
 
-    @BeforeAll
-    public void setUp() {
-
-        //Valores para utilizar en tests
-        usuario = PropertyReader.getValuesProperty("user");
-        password = PropertyReader.getValuesProperty("password");
-        sitioReporte = PropertyReader.getValuesProperty("sitioReporte");
+    @BeforeEach
+    public void configuracionAntesDelTestGenerarReporte() {
 
         //Valores para utilizar en los asserts
         tituloPaginaReportes = PropertyReader.getValuesProperty("tituloPaginaReportes");
         mensajeError = PropertyReader.getValuesProperty("mensajeError");
+        sitioReporte = PropertyReader.getValuesProperty("sitioReporte");
+        nombreUsuarioRol = PropertyReader.getValuesProperty("nombreUsuarioRol");
 
         //Configurar el WebDriver
-        driver = Utils.configurarDriver();
         loginPage = new LoginPage(driver);
-        loginPage.signInWith(usuario, password);
+        loginPage.signInWith();
     }
 
     @Test
-    void GenerarReporte() throws InterruptedException {
+    void generarReporte() {
 
         //Entrar en el menú Reportes
         reportesPage = new ReportesPage(driver);
-        reportesPage.IrAMenuReportes();
-
-        sleep(2000);
+        reportesPage.irAMenuReportes();
 
         //Verificar título de la página Time Tracker - Reportes
         assertEquals(tituloPaginaReportes, driver.getTitle(), mensajeError);
@@ -67,9 +49,10 @@ public class PruebaGenerarReporte {
         //Verificar que el título en la página es "Reportes"
         assertEquals("Reportes", driver.findElement(By.cssSelector(".page-title")).getText());
 
-        reportesPage.OpcionesReporte();
+        //Verificar que el usuario es el adecuado
+        assertEquals(nombreUsuarioRol, driver.findElement(By.cssSelector(".user-details")).getText());
 
-        sleep(2000);
+        reportesPage.opcionesReporte();
 
         //Verificar que esté presente la grilla en pantalla
         {
